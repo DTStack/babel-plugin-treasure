@@ -1,0 +1,27 @@
+{
+  "name": "babel-plugin-treasure",
+  "version": "0.5.0",
+  "description": "a babel plugin for the special demand",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "father build --cjs",
+    "dev": "father doc dev"
+  },
+  "keywords": [
+    "babel",
+    "dtstack"
+  ],
+  "author": "chenfeng",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/types": "^7.11.5",
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "father": "^2.29.10",
+    "np": "^6.5.0"
+  }
+}
