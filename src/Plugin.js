@@ -82,8 +82,8 @@ export default class Plugin {
   }
 
   ProgramExit(_, state) {
-    this.getPluginState(state).pathToRemove.forEach(p => !p.removed && p.remove());
-    // 退出整一组AST时候删除节点，不清楚他如何管理所有待删除状态
+    this.getPluginState(state).pathToRemove.forEach(p => !p.removed && p.remove()); // 未删除为false
+    // 退出AST时候删除节点，这也是整个工作树的最后一步
   }
 
   ImportDeclaration(path, state) {
@@ -125,9 +125,32 @@ export default class Plugin {
     const { node } = path;
     this.buildExpressionHandler(node, ['test', 'consequent', 'alternate'], path, state);
   }
-  // MemberExpression(path, state) {
-  //   const { node } = path;
-  // }
+  // 例如： console.log(_.debounce())
+  MemberExpression(path, state) {
+    const { node } = path;
+    const file = path?.hub?.file || state?.file;
+    const pluginState = this.getPluginState(state);
+    if (!node?.object?.name) return;
+
+    if (pluginState.libraryObjs[node.object.name]) {
+      path.replceWith(this.importMethod(node.property.name, file, pluginState));
+    } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
+      const { scope } = path.scope.getBinding(node.object.name);
+      // 替换全局变量，具体例子:console.log(Input.debounce())
+      if (scope.path.parent.type === 'File') {
+        // 对于在file scope中的全局变量进行处理
+        const { scope } = path.scope.getBinding(node.object.name);
+        if (scope.path.parent.type === 'File') {
+          node.object = this.importMethod(
+            pluginState.specified[node.object.name],
+            file,
+            pluginState,
+          );
+        }
+      }
+    }
+  }
+
   CallExpression(path, state) {
     const { node } = path;
     const file = path?.hub?.file || state?.file;
@@ -149,6 +172,7 @@ export default class Plugin {
       return arg;
     });
   }
+
   // 组件原始名称 , sub.file , 导入依赖项
   importMethod(methodName, file, pluginState) {
     if (!pluginState.selectedMethods[methodName]) {
@@ -204,6 +228,7 @@ export default class Plugin {
     }
     return { ...pluginState.selectedMethods[methodName] };
   }
+
   buildExpressionHandler(node, props, path, state) {
     const file = path?.hub?.file || state?.file; // 具体原因待补充，和help/import有关
     const { types } = this;
@@ -214,7 +239,7 @@ export default class Plugin {
         pluginState.specified[node[prop].name] && // node[prop].name别名，看看用了没，如果用了
         types.isImportSpecifier(path.node.getBinding(node[prop].name).path) //根据作用域回溯，看看是不是一个import节点
       ) {
-        //替换AST节点
+        // 替换AST节点
       }
     });
   }
