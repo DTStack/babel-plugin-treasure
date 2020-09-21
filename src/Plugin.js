@@ -67,8 +67,8 @@ export default class Plugin {
     const pluginState = this.getPluginState(state);
     pluginState.specified = Object.create(null); // 导入对象集合
     pluginState.libraryObjs = Object.create(null); // 库对象集合(非module导入的内容)
-    pluginState.select = Object.create(null); // 具体未知
-    pluginState.pathToRemove = []; // 存储需要删除的节点，在
+    pluginState.selectedMethods = Object.create(null); // 存放经过importMethod之后的节点
+    pluginState.pathsToRemove = []; // 存储需要删除的节点，在
     /**
      * state:{
      *    importPluginState「Number」: {
@@ -82,7 +82,7 @@ export default class Plugin {
   }
 
   ProgramExit(_, state) {
-    this.getPluginState(state).pathToRemove.forEach(p => !p.removed && p.remove()); // 未删除为false
+    this.getPluginState(state).pathsToRemove.forEach(p => !p.removed && p.remove()); // 未删除为false
     // 退出AST时候删除节点，这也是整个工作树的最后一步
   }
 
@@ -124,7 +124,7 @@ export default class Plugin {
       if (
         pluginState.specified[argName] &&
         path.scope.hasBinding(argName) &&
-        type.isImportSpecifier(path.scope.getBinding(argName).path)
+        types.isImportSpecifier(path.scope.getBinding(argName).path)
       ) {
         return this.importMethod(pluginState.specified[argName], file, pluginState); // 替换了引用，help/import插件返回节点类型与名称
       }
@@ -144,6 +144,7 @@ export default class Plugin {
         customName,
         fileName,
       } = this;
+
       const transformedMethodName = camel2UnderlineComponentName
         ? transCamel(methodName, '_')
         : camel2DashComponentName === true
@@ -151,7 +152,6 @@ export default class Plugin {
         : camel2DashComponentName === 'upper' || camel2DashComponentName === 'lower'
         ? transCamel(methodName, camel2DashComponentName)
         : methodName;
-
       /**
        * 转换路径，优先按照用户定义的customName进行转换，如果没有提供就按照常规拼接路径
        */
@@ -200,7 +200,10 @@ export default class Plugin {
       path.replceWith(this.importMethod(node.property.name, file, pluginState));
     } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
       const { scope } = path.scope.getBinding(node.object.name);
-      // 替换全局变量，具体例子:console.log(Input.debounce())
+      /**
+       * 替换全局变量，具体例子:console.log(Input.debounce())
+       **/
+
       if (scope.path.parent.type === 'File') {
         // 对于在file scope中的全局变量进行处理
         const { scope } = path.scope.getBinding(node.object.name);
@@ -213,7 +216,7 @@ export default class Plugin {
         }
       }
     }
-  } // 例如： console.log(lodash.debounce())
+  } /**例如： console.log(lodash.debounce()) */
 
   ClassDeclaration(path, state) {
     const { node } = path;

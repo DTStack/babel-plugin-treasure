@@ -39,15 +39,14 @@ export default function({ types }) {
       ];
       // eslint-disable-next-line prefer-rest-params
       applyInstance('ProgramEnter', arguments, this);
-      console.log(plugins);
     },
     exit() {
-      console.log('finished');
+      applyInstance('ProgramExit', arguments, this);
     },
   };
 
   const methods = [
-    'importDeclaration',
+    'ImportDeclaration',
     'CallExpression',
     'MemberExpression',
     'ClassDeclaration',
