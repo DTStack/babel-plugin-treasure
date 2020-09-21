@@ -12,6 +12,20 @@ function normalizeCustomName(originCustomName) {
   return originCustomName;
 }
 
+function winPath(path) {
+  return path.replace(/\\/g, '/');
+}
+
+function transCamel(_str, symbol) {
+  if (symbol === 'upper' || symbol === 'lower') {
+    return symbol === 'upper'
+      ? _str[0].toUpperCase() + _str.substr(1)
+      : _str[0].toLowerCase() + _str.substr(1);
+  }
+  const str = _str[0].toLowerCase() + _str.substr(1);
+  return str.replace(/([A-Z])/g, $1 => `${symbol}${$1.toLowerCase()}`);
+}
+
 export default class Plugin {
   constructor(
     libraryName,
@@ -135,7 +149,61 @@ export default class Plugin {
       return arg;
     });
   }
+  // 组件原始名称 , sub.file , 导入依赖项
+  importMethod(methodName, file, pluginState) {
+    if (!pluginState.selectedMethods[methodName]) {
+      const {
+        libraryName,
+        style,
+        libraryDirectory,
+        camel2UnderlineComponentName,
+        camel2DashComponentName,
+        customName,
+        fileName,
+      } = this;
+      const transformedMethodName = camel2UnderlineComponentName
+        ? transCamel(methodName, '_')
+        : camel2DashComponentName === true
+        ? transCamel(methodName, '-')
+        : camel2DashComponentName === 'upper' || camel2DashComponentName === 'lower'
+        ? transCamel(methodName, camel2DashComponentName)
+        : methodName;
 
+      /**
+       * 转换路径，优先按照用户定义的customName进行转换，如果没有提供就按照常规拼接路径
+       */
+      const path = winPath(
+        customName
+          ? this.customName(transformedMethodName, file)
+          : join(libraryName, libraryDirectory, transformedMethodName, fileName),
+      );
+      /**
+       * 根据是否是默认引入对最终路径做处理,并没有对namespace做处理
+       */
+      pluginState.selectedMethods[methodName] = this.transformToDefaultImport
+        ? addDefault(file.path, path, { nameHint: methodName })
+        : addNamed(file.path, methodName, path);
+      if (this.customStyleName) {
+        const stylePath = winPath(this.customStyleName(transformedMethodName));
+        addSideEffect(file.path, `${stylePath}`);
+      } else if (this.styleLibraryDirectory) {
+        const stylePath = winPath(
+          join(this.libraryName, this.styleLibraryDirectory, transformedMethodName, this.fileName),
+        );
+        addSideEffect(file.path, `${stylePath}`);
+      } else if (style === true) {
+        addSideEffect(file.path, `${path}/style`);
+      } else if (style === 'css') {
+        addSideEffect(file.path, `${path}/style`);
+      } else if (typeof style === 'function') {
+        const stylePath = style(path, file);
+        if (stylePath) {
+          addSideEffect(file.path, stylePath);
+        }
+      }
+    }
+    return { ...pluginState.selectedMethods[methodName] };
+  }
   buildExpressionHandler(node, props, path, state) {
     const file = path?.hub?.file || state?.file; // 具体原因待补充，和help/import有关
     const { types } = this;
