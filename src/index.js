@@ -3,6 +3,14 @@ import Plugin from './Plugin';
 
 export default function({ types }) {
   let plugins = null;
+
+  /**
+   * 用于单测初始化插件
+   */
+  global.__clearBabelTreasurePlugin = () => {
+    plugins = null;
+  };
+
   /**
    * 从类中继承方法与参数
    */
@@ -56,6 +64,9 @@ export default function({ types }) {
     'BinaryExpression',
     'VariableDeclarator',
     'ArrayExpression',
+    'NewExpression',
+    'ExportDefaultDeclaration',
+    'ExpressionStatement',
   ];
 
   const ret = {

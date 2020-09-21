@@ -200,6 +200,7 @@ export default class Plugin {
       path.replceWith(this.importMethod(node.property.name, file, pluginState));
     } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
       const { scope } = path.scope.getBinding(node.object.name);
+
       /**
        * 替换全局变量，具体例子:console.log(Input.debounce())
        **/
@@ -255,6 +256,24 @@ export default class Plugin {
     const props = node?.elements.map((_, index) => index);
     this.buildExpressionHandler(node.elements, props, path, state);
   } // 例如 [antd,lodash]
+
+  NewExpression(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['callee', 'arguments'], path, state);
+  } // 例如 new Antd(xx)
+
+  ExpressionStatement(path, state) {
+    const { node } = path;
+    const { types } = this;
+    if (types.isAssignmentExpression(node.expression)) {
+      this.buildExpressionHandler(node.expression, ['right'], path, state);
+    }
+  } // 例如 module.export ={antd}
+
+  ExportDefaultDeclaration(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['declaration'], path, state);
+  } // 例如 export default antd
 
   // 处理“基层”转换，套娃的结构交给其他的node处理
   buildExpressionHandler(node, props, path, state) {
