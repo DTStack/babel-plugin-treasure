@@ -231,6 +231,28 @@ export default class Plugin {
     this.buildExpressionHandler(node, ['argument'], path, state); // 取return AST 结构的argument
   } // 例如 return lodash
 
+  IfStatement(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['test'], path, state);
+    this.buildExpressionHandler(node.test, ['left', 'right'], path, state); //未知
+  } // 待补充实例,有两种转换
+
+  BinaryExpression(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['left', 'right'], path, state);
+  } // 例如 lodash > '22'
+
+  VariableDeclarator(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['init'], path, state);
+  } // 例如 const a=lodash
+
+  ArrayExpression(path, state) {
+    const { node } = path;
+    const props = node?.elements.map((_, index) => index);
+    this.buildExpressionHandler(node.elements, props, path, state);
+  } // 例如 [antd,lodash]
+
   // 处理“基层”转换，套娃的结构交给其他的node处理
   buildExpressionHandler(node, props, path, state) {
     const file = path?.hub?.file || state?.file; // 具体原因待补充，和help/import有关
