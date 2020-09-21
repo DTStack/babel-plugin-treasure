@@ -4,7 +4,7 @@ export default {
   esm: {
     type: 'rollup',
   },
-  // cjs: 'rollup',
+  cjs: 'rollup',
   // umd: {
   //   name: 'treasure',
   // },
