@@ -47,8 +47,8 @@ export default class Plugin {
     this.styleLibraryDirectory = styleLibraryDirectory; // style包路径
     this.camel2DashComponentName = camel2DashComponentName; // 组件名转换为大 /小驼峰【upper/lower】
     this.transformToDefaultImport = transformToDefaultImport || true; // 处理默认导入，暂不知为何默认为true
-    this.customName = normalizeCustomName(customName);
-    this.customStyleName = normalizeCustomName(customStyleName);
+    this.customName = normalizeCustomName(customName); // 处理转换结果的函数或路径
+    this.customStyleName = normalizeCustomName(customStyleName); // 处理转换结果的函数或路径
     this.camel2UnderlineComponentName = camel2UnderlineComponentName; // 处理成类似time_picker的形式
     this.fileName = fileName || ''; // 链接到具体的文件，例如antd/lib/button/[abc.js]
     this.types = types; // babel-types
@@ -110,47 +110,6 @@ export default class Plugin {
     }
   } // 主目标，收集依赖
 
-  ClassDeclaration(path, state) {
-    const { node } = path;
-    this.buildExpressionHandler(node, ['superClass'], path, state); // 不明白为啥叫superClass
-  }
-
-  ReturnStatement(path, state) {
-    const { node } = path;
-    this.buildExpressionHandler(node, ['argument'], path, state); // 取return AST 结构的argument
-  }
-
-  ConditionalExpression(path, state) {
-    // 取三元表达式的条件与结果
-    const { node } = path;
-    this.buildExpressionHandler(node, ['test', 'consequent', 'alternate'], path, state);
-  }
-  // 例如： console.log(_.debounce())
-  MemberExpression(path, state) {
-    const { node } = path;
-    const file = path?.hub?.file || state?.file;
-    const pluginState = this.getPluginState(state);
-    if (!node?.object?.name) return;
-
-    if (pluginState.libraryObjs[node.object.name]) {
-      path.replceWith(this.importMethod(node.property.name, file, pluginState));
-    } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
-      const { scope } = path.scope.getBinding(node.object.name);
-      // 替换全局变量，具体例子:console.log(Input.debounce())
-      if (scope.path.parent.type === 'File') {
-        // 对于在file scope中的全局变量进行处理
-        const { scope } = path.scope.getBinding(node.object.name);
-        if (scope.path.parent.type === 'File') {
-          node.object = this.importMethod(
-            pluginState.specified[node.object.name],
-            file,
-            pluginState,
-          );
-        }
-      }
-    }
-  }
-
   CallExpression(path, state) {
     const { node } = path;
     const file = path?.hub?.file || state?.file;
@@ -171,7 +130,7 @@ export default class Plugin {
       }
       return arg;
     });
-  }
+  } // 转换react.createElement
 
   // 组件原始名称 , sub.file , 导入依赖项
   importMethod(methodName, file, pluginState) {
@@ -228,7 +187,51 @@ export default class Plugin {
     }
     return { ...pluginState.selectedMethods[methodName] };
   }
+  /**
+   * 区块分界线
+   **/
+  MemberExpression(path, state) {
+    const { node } = path;
+    const file = path?.hub?.file || state?.file;
+    const pluginState = this.getPluginState(state);
+    if (!node?.object?.name) return;
 
+    if (pluginState.libraryObjs[node.object.name]) {
+      path.replceWith(this.importMethod(node.property.name, file, pluginState));
+    } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
+      const { scope } = path.scope.getBinding(node.object.name);
+      // 替换全局变量，具体例子:console.log(Input.debounce())
+      if (scope.path.parent.type === 'File') {
+        // 对于在file scope中的全局变量进行处理
+        const { scope } = path.scope.getBinding(node.object.name);
+        if (scope.path.parent.type === 'File') {
+          node.object = this.importMethod(
+            pluginState.specified[node.object.name],
+            file,
+            pluginState,
+          );
+        }
+      }
+    }
+  } // 例如： console.log(lodash.debounce())
+
+  ClassDeclaration(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['superClass'], path, state); // 不明白为啥叫superClass
+  } // 待补充实例
+
+  ConditionalExpression(path, state) {
+    // 取三元表达式的条件与结果
+    const { node } = path;
+    this.buildExpressionHandler(node, ['test', 'consequent', 'alternate'], path, state);
+  } // 例如 lodash ? 'some code' : 'some code'
+
+  ReturnStatement(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['argument'], path, state); // 取return AST 结构的argument
+  } // 例如 return lodash
+
+  // 处理“基层”转换，套娃的结构交给其他的node处理
   buildExpressionHandler(node, props, path, state) {
     const file = path?.hub?.file || state?.file; // 具体原因待补充，和help/import有关
     const { types } = this;
@@ -240,6 +243,7 @@ export default class Plugin {
         types.isImportSpecifier(path.node.getBinding(node[prop].name).path) //根据作用域回溯，看看是不是一个import节点
       ) {
         // 替换AST节点
+        node[prop] = this.importMethod(pluginState.specified[node[prop].name], file, pluginState);
       }
     });
   }
