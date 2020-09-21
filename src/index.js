@@ -46,7 +46,18 @@ export default function({ types }) {
     },
   };
 
-  const methods = ['importDeclaration'];
+  const methods = [
+    'importDeclaration',
+    'CallExpression',
+    'MemberExpression',
+    'ClassDeclaration',
+    'ConditionalExpression',
+    'ReturnStatement',
+    'IfStatement',
+    'BinaryExpression',
+    'VariableDeclarator',
+    'ArrayExpression',
+  ];
 
   const ret = {
     visitor: { Program }, //对整棵AST树的入口进行初始化操作
