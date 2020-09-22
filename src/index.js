@@ -67,6 +67,7 @@ export default function({ types }) {
     'NewExpression',
     'ExportDefaultDeclaration',
     'ExpressionStatement',
+    'LogicalExpression',
   ];
 
   const ret = {

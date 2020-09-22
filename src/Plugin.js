@@ -222,7 +222,7 @@ export default class Plugin {
   ClassDeclaration(path, state) {
     const { node } = path;
     this.buildExpressionHandler(node, ['superClass'], path, state); // 不明白为啥叫superClass
-  } // 待补充实例
+  } // 例如 class emaple extends Antd {...}
 
   ConditionalExpression(path, state) {
     // 取三元表达式的条件与结果
@@ -274,6 +274,11 @@ export default class Plugin {
     const { node } = path;
     this.buildExpressionHandler(node, ['declaration'], path, state);
   } // 例如 export default antd
+
+  LogicalExpression(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['left', 'right'], path, state);
+  } // 例如 antd && [some code]
 
   // 处理“基层”转换，套娃的结构交给其他的node处理
   buildExpressionHandler(node, props, path, state) {
