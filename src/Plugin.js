@@ -45,7 +45,7 @@ export default class Plugin {
     this.libraryDirectory = typeof libraryDirectory === 'undefined' ? 'lib' : libraryDirectory; // 包路径
     this.style = style || false; // 是否加载style
     this.styleLibraryDirectory = styleLibraryDirectory; // style包路径
-    this.camel2DashComponentName = camel2DashComponentName; // 组件名转换为大 /小驼峰【upper/lower】
+    this.camel2DashComponentName = camel2DashComponentName || true; // 组件名转换为大 /小驼峰【upper/lower】
     this.transformToDefaultImport = transformToDefaultImport || true; // 处理默认导入，暂不知为何默认为true
     this.customName = normalizeCustomName(customName); // 处理转换结果的函数或路径
     this.customStyleName = normalizeCustomName(customStyleName); // 处理转换结果的函数或路径
@@ -289,7 +289,7 @@ export default class Plugin {
       if (!types.isIdentifier(node[prop])) return; // 不是Identifier就结束
       if (
         pluginState.specified[node[prop].name] && // node[prop].name别名，看看用了没，如果用了
-        types.isImportSpecifier(path.node.getBinding(node[prop].name).path) //根据作用域回溯，看看是不是一个import节点
+        types.isImportSpecifier(path.scope.getBinding(node[prop].name).path) //根据作用域回溯，看看是不是一个import节点
       ) {
         // 替换AST节点
         node[prop] = this.importMethod(pluginState.specified[node[prop].name], file, pluginState);
