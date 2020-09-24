@@ -24,8 +24,8 @@ export default function({ types }) {
   }
 
   /**
-   * 入口初始化数据结构
-   * 出口删除已经处理完毕的标记节点
+   * Program入口初始化数据结构
+   * 出口删除处理完毕的标记节点
    */
   const Program = {
     enter(path, { opts = {} }) {
@@ -41,6 +41,7 @@ export default function({ types }) {
           opts.camel2UnderlineComponentName,
           opts.fileName,
           opts.customName,
+          opts.noDefaultComponentName,
           opts.transformToDefaultImport,
           types,
         ),
@@ -68,12 +69,13 @@ export default function({ types }) {
     'ExportDefaultDeclaration',
     'ExpressionStatement',
     'LogicalExpression',
+    'SwitchStatement',
+    'SwitchCase',
   ];
 
   const ret = {
     visitor: { Program }, //对整棵AST树的入口进行初始化操作
   };
-
   // eslint-disable-next-line no-restricted-syntax
   for (const method of methods) {
     ret.visitor[method] = function() {

@@ -13,7 +13,7 @@ function normalizeCustomName(originCustomName) {
 }
 
 function winPath(path) {
-  return path.replace(/\\/g, '/');
+  return path?.replace(/\\/g, '/');
 }
 
 function transCamel(_str, symbol) {
@@ -23,7 +23,7 @@ function transCamel(_str, symbol) {
       : _str[0].toLowerCase() + _str.substr(1);
   }
   const str = _str[0].toLowerCase() + _str.substr(1);
-  return str.replace(/([A-Z])/g, $1 => `${symbol}${$1.toLowerCase()}`);
+  return str?.replace(/([A-Z])/g, $1 => `${symbol}${$1.toLowerCase()}`);
 }
 
 export default class Plugin {
@@ -38,6 +38,7 @@ export default class Plugin {
     fileName,
     customName,
     transformToDefaultImport,
+    noDefaultComponentName,
     types, // babel-types
     index = 0, // 标记符，具体作用后续补充
   ) {
@@ -51,6 +52,9 @@ export default class Plugin {
     this.customStyleName = normalizeCustomName(customStyleName); // 处理转换结果的函数或路径
     this.camel2UnderlineComponentName = camel2UnderlineComponentName; // 处理成类似time_picker的形式
     this.fileName = fileName || ''; // 链接到具体的文件，例如antd/lib/button/[abc.js]
+    this.noDefaultComponentName = Array.isArray(noDefaultComponentName)
+      ? noDefaultComponentName
+      : false;
     this.types = types; // babel-types
     this.pluginStateKey = `importPluginState${index}`;
   }
@@ -86,6 +90,9 @@ export default class Plugin {
     // 退出AST时候删除节点，这也是整个工作树的最后一步
   }
 
+  /**
+   * 主目标，收集依赖
+   */
   ImportDeclaration(path, state) {
     const { node } = path;
 
@@ -108,7 +115,7 @@ export default class Plugin {
       });
       pluginState.pathsToRemove.push(path); // 取值完毕的节点添加进预删除数组
     }
-  } // 主目标，收集依赖
+  }
 
   CallExpression(path, state) {
     const { node } = path;
@@ -118,6 +125,9 @@ export default class Plugin {
     const pluginState = this.getPluginState(state);
     if (types.isIdentifier(node.callee)) {
       // 这里对应场景不明
+      // if (pluginState.specified[name]) {
+      //   node.callee = this.importMethod(pluginState.specified[name], file, pluginState);
+      // }
     }
     node.arguments = node.arguments.map(arg => {
       const { name: argName } = arg;
@@ -155,9 +165,13 @@ export default class Plugin {
       /**
        * 转换路径，优先按照用户定义的customName进行转换，如果没有提供就按照常规拼接路径
        */
+
       const path = winPath(
         customName
-          ? this.customName(transformedMethodName, file)
+          ? typeof customName === 'object'
+            ? customName[transformedMethodName] ||
+              join(libraryName, libraryDirectory, transformedMethodName, fileName)
+            : customName(transformedMethodName, file)
           : join(libraryName, libraryDirectory, transformedMethodName, fileName),
       );
       /**
@@ -166,6 +180,7 @@ export default class Plugin {
       pluginState.selectedMethods[methodName] = this.transformToDefaultImport
         ? addDefault(file.path, path, { nameHint: methodName })
         : addNamed(file.path, methodName, path);
+
       if (this.customStyleName) {
         const stylePath = winPath(this.customStyleName(transformedMethodName));
         addSideEffect(file.path, `${stylePath}`);
@@ -177,7 +192,7 @@ export default class Plugin {
       } else if (style === true) {
         addSideEffect(file.path, `${path}/style`);
       } else if (style === 'css') {
-        addSideEffect(file.path, `${path}/style`);
+        addSideEffect(file.path, `${path}/style/css`);
       } else if (typeof style === 'function') {
         const stylePath = style(path, file);
         if (stylePath) {
@@ -279,6 +294,16 @@ export default class Plugin {
     const { node } = path;
     this.buildExpressionHandler(node, ['left', 'right'], path, state);
   } // 例如 antd && [some code]
+
+  SwitchStatement(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['discriminant'], path, state);
+  } // 例如 switch(antd.Button)
+
+  SwitchCase(path, state) {
+    const { node } = path;
+    this.buildExpressionHandler(node, ['test'], path, state);
+  } // 例如 case antd.Button:
 
   // 处理“基层”转换，套娃的结构交给其他的node处理
   buildExpressionHandler(node, props, path, state) {
