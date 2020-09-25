@@ -41,7 +41,6 @@ export default function({ types }) {
           opts.camel2UnderlineComponentName,
           opts.fileName,
           opts.customName,
-          opts.noDefaultComponentName,
           opts.transformToDefaultImport,
           types,
         ),

@@ -38,7 +38,6 @@ export default class Plugin {
     fileName,
     customName,
     transformToDefaultImport,
-    noDefaultComponentName,
     types, // babel-types
     index = 0, // 标记符，具体作用后续补充
   ) {
@@ -47,14 +46,13 @@ export default class Plugin {
     this.style = style || false; // 是否加载style
     this.styleLibraryDirectory = styleLibraryDirectory; // style包路径
     this.camel2DashComponentName = camel2DashComponentName || true; // 组件名转换为大 /小驼峰【upper/lower】
-    this.transformToDefaultImport = transformToDefaultImport || true; // 处理默认导入，暂不知为何默认为true
+    this.transformToDefaultImport = Array.isArray(transformToDefaultImport)
+      ? transformToDefaultImport
+      : true; // 处理默认导入，暂不知为何默认为true
     this.customName = normalizeCustomName(customName); // 处理转换结果的函数或路径
     this.customStyleName = normalizeCustomName(customStyleName); // 处理转换结果的函数或路径
     this.camel2UnderlineComponentName = camel2UnderlineComponentName; // 处理成类似time_picker的形式
     this.fileName = fileName || ''; // 链接到具体的文件，例如antd/lib/button/[abc.js]
-    this.noDefaultComponentName = Array.isArray(noDefaultComponentName)
-      ? noDefaultComponentName
-      : false;
     this.types = types; // babel-types
     this.pluginStateKey = `importPluginState${index}`;
   }
@@ -151,10 +149,10 @@ export default class Plugin {
         libraryDirectory,
         camel2UnderlineComponentName,
         camel2DashComponentName,
+        transformToDefaultImport,
         customName,
         fileName,
       } = this;
-
       const transformedMethodName = camel2UnderlineComponentName
         ? transCamel(methodName, '_')
         : camel2DashComponentName === true
@@ -177,9 +175,11 @@ export default class Plugin {
       /**
        * 根据是否是默认引入对最终路径做处理,并没有对namespace做处理
        */
-      pluginState.selectedMethods[methodName] = this.transformToDefaultImport
-        ? addDefault(file.path, path, { nameHint: methodName })
-        : addNamed(file.path, methodName, path);
+      pluginState.selectedMethods[methodName] =
+        Array.isArray(transformToDefaultImport) &&
+        transformToDefaultImport.indexOf(methodName) !== -1
+          ? addNamed(file.path, methodName, path)
+          : addDefault(file.path, path, { nameHint: methodName });
 
       if (this.customStyleName) {
         const stylePath = winPath(this.customStyleName(transformedMethodName));
