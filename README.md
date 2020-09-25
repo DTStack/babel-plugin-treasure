@@ -16,7 +16,7 @@ yarn add babel-plugin-treasure -D
 
 ## 使用前需要注意点
 
-==**删除应用入口处的 antd 或者 dt-react-component 的样式引入**==，因为插件会帮你自动做。
+**删除应用入口处的 antd 或者 dt-react-component 的样式引入**，因为插件会帮你自动做。
 
 ```javascrit
 // 不需要添加这些样式！
@@ -87,23 +87,23 @@ yarn add babel-plugin-treasure -D
         "style": "css",
         "camel2DashComponentName": "lower",
         "customName": {
-          "GoBack": "dt-react-component/lib/go-back",
-          "ContextMenu": "dt-react-component/lib/context-menu",
-          "EasySelect": "dt-react-component/lib/easy-select",
-          "SpreadSheet": "dt-react-component/lib/spreadsheet",
-          "MarkdownRender": "dt-react-component/lib/markdown-render",
-          "BreadcrumbRender": "dt-react-component/lib/breadcrumb",
-          "KeyEventListener": "dt-react-component/lib/keyCombiner/listener",
-          "FullScreenButton": "dt-react-component/lib/fullscreen",
-          "SwitchWindow": "dt-react-component/lib/window",
-          "RenderFormItem": "dt-react-component/lib/formComponent"
+          "goBack": "dt-react-component/lib/go-back",
+          "contextMenu": "dt-react-component/lib/context-menu",
+          "easySelect": "dt-react-component/lib/easy-select",
+          "spreadSheet": "dt-react-component/lib/spreadsheet",
+          "markdownRender": "dt-react-component/lib/markdown-render",
+          "breadcrumbRender": "dt-react-component/lib/breadcrumb",
+          "keyEventListener": "dt-react-component/lib/keyCombiner/listener",
+          "fullScreenButton": "dt-react-component/lib/fullscreen",
+          "switchWindow": "dt-react-component/lib/window",
+          "renderFormItem": "dt-react-component/lib/formComponent"
         }
       }
     ]
   ]
 ```
 
-注意：当你开发的项目中有使用 antd 的时候，请注意由于 dt-react-component 依赖于 antd，所以==需要两者都进行配置==，实现协同按需加载
+注意：当你开发的项目中有使用 antd 的时候，请注意由于 dt-react-component 依赖于 antd，所以需要两者都进行配置，实现协同按需加载
 
 ```javascript
   "plugins": [
@@ -117,23 +117,23 @@ yarn add babel-plugin-treasure -D
       "antd"
     ],
     [
-      "treasure",
+       "treasure",
       {
         "libraryName": "dt-react-component",
         "libraryDirectory": "lib",
         "style": "css",
         "camel2DashComponentName": "lower",
         "customName": {
-          "GoBack": "dt-react-component/lib/go-back",
-          "ContextMenu": "dt-react-component/lib/context-menu",
-          "EasySelect": "dt-react-component/lib/easy-select",
-          "SpreadSheet": "dt-react-component/lib/spreadsheet",
-          "MarkdownRender": "dt-react-component/lib/markdown-render",
-          "BreadcrumbRender": "dt-react-component/lib/breadcrumb",
-          "KeyEventListener": "dt-react-component/lib/keyCombiner/listener",
-          "FullScreenButton": "dt-react-component/lib/fullscreen",
-          "SwitchWindow": "dt-react-component/lib/window",
-          "RenderFormItem": "dt-react-component/lib/formComponent"
+          "goBack": "dt-react-component/lib/go-back",
+          "contextMenu": "dt-react-component/lib/context-menu",
+          "easySelect": "dt-react-component/lib/easy-select",
+          "spreadSheet": "dt-react-component/lib/spreadsheet",
+          "markdownRender": "dt-react-component/lib/markdown-render",
+          "breadcrumbRender": "dt-react-component/lib/breadcrumb",
+          "keyEventListener": "dt-react-component/lib/keyCombiner/listener",
+          "fullScreenButton": "dt-react-component/lib/fullscreen",
+          "switchWindow": "dt-react-component/lib/window",
+          "renderFormItem": "dt-react-component/lib/formComponent"
         }
       },
       "dt-react-component"
@@ -325,3 +325,44 @@ import { ChromeDownload } from 'dt-react-component'
 ↓ ↓ ↓ ↓ ↓ ↓
 import 'dt-react-component/lib/chrome-download/exmaple'
 ```
+
+## 关于优化点的说明
+
+### customName
+
+虽然 customName 支持了以对象作为参数，但是相比函数作为参数有一个很明显的不足之处：当函数作为 customName 的 value 时，插件会返回组件当前的名称，你将在插件返回的组件名称的基础上进行修改，而对象的形式**你必须预测到组件被插件修改后的名称**，并给予转换后的路径。  
+举个例子：如果你设置了"camel2DashComponentName": "lower"。并且在代码中导入了
+
+```js
+import { ChromeDownload } from 'dt-react-component';
+```
+
+```js
+// bad, useless
+[
+    "treasure",
+    {
+        ...,
+        "customName": {
+            "ChromeDownload":"dt-react-component/lib/chrome-download"
+        }
+    }
+]
+
+```
+
+```js
+// good
+// 由于你设置了lower，所以必须手动将key变成小驼峰的形式:chromeDownload
+[
+    "treasure",
+    {
+        ...,
+        "customName": {
+            "chromeDownload":"dt-react-component/lib/chrome-download"
+        }
+    }
+]
+```
+
+其他支持以对象作为参数的属性同理。
