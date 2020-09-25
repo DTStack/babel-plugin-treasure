@@ -8,10 +8,10 @@
 
 ```javascript
 // 使用npm
-npm i babel-plugin-import --save-dev
+npm i babel-plugin-treasure --save-dev
 
 // 使用yarn
-yarn add babel-plugin-import -D
+yarn add babel-plugin-treasure -D
 ```
 
 ### 属性
