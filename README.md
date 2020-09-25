@@ -3,7 +3,7 @@
 ## 根源
 
 为什么在有 tree-shaking 的现在我们还需要这个插件？  
-此插件的作用在于帮你对你所引用的库进行 tree-shaking，关于项目内部的 tree-shaking 奥秘以及更多的奥秘请看文[你的 tree-shaking 其实并没什么软用](https://zhuanlan.zhihu.com/p/32831172)
+此插件的作用在于帮你对你所引用的库进行 tree-shaking，关于项目内部的 tree-shaking 奥秘以及更多的奥秘请看文[你的 tree-shaking 其实并没什么软用](https://note.youdao.com/)
 
 ## 为什么取名 babel-plugin-treasure
 
@@ -19,7 +19,7 @@ npm i babel-plugin-treasure --save-dev
 yarn add babel-plugin-treasure -D
 ```
 
-## 使用前需要注意点
+## 使用前注意事项
 
 **删除应用入口处的 antd 或者 dt-react-component 的样式引入**，因为插件会帮你自动做。
 
@@ -90,6 +90,13 @@ yarn add babel-plugin-treasure -D
         "libraryName": "dt-react-component",
         "libraryDirectory": "lib",
         "style": "css",
+        "transformToDefaultImport"": [
+          "ContextMenu",
+          "BreadcrumbRender",
+          "Circle",
+          "RenderFormItem",
+          "FullScreenButton"
+        ],
         "camel2DashComponentName": "lower",
         "customName": {
           "goBack": "dt-react-component/lib/go-back",
@@ -127,6 +134,13 @@ yarn add babel-plugin-treasure -D
         "libraryName": "dt-react-component",
         "libraryDirectory": "lib",
         "style": "css",
+        "transformToDefaultImport"": [
+          "ContextMenu",
+          "BreadcrumbRender",
+          "Circle",
+          "RenderFormItem",
+          "FullScreenButton"
+        ],
         "camel2DashComponentName": "lower",
         "customName": {
           "goBack": "dt-react-component/lib/go-back",
@@ -169,7 +183,7 @@ yarn add babel-plugin-treasure -D
 
 ### libraryDirectory
 
-制定 library 的包格式目录，一般有 lib, es, esm, umd 等此选项默认值为 lib
+制定 library 的包格式目录，一般有 lib, es, esm, umd 等，由包开发者制定。此选项默认值为 lib
 
 #### `{ libraryDirectory: "lib" }`
 
@@ -235,7 +249,7 @@ ChromeDownload → chrome_download
 
 ### transformToDefaultImport
 
-处理默认导入，默认为 true, 如果没有默认导入，请把选项设置为 false
+处理默认导入，你可以给予一个数组，在数组中的组件，最后不会以默认形式进行导出。默认为 true， 如果你的组件完全没有默认导入，请把选项设置为 false
 
 ### customName
 
