@@ -1,5 +1,10 @@
 # babel-plugin-treasure
 
+## 根源
+
+为什么在有 tree-shaking 的现在我们还需要这个插件？  
+此插件的作用在于帮你对你所引用的库进行 tree-shaking，关于项目内部的 tree-shaking 奥秘以及更多的奥秘请看文[你的 tree-shaking 其实并没什么软用](https://zhuanlan.zhihu.com/p/32831172)
+
 ## 为什么取名 babel-plugin-treasure
 
 致力于成为 babel-plugin 百宝箱，各种对 AST 节点修改操作的诉求，目前用于统一式便捷解决 dt-react-component 与 ant-design-dtinsight-theme 的按需加载需求
@@ -50,7 +55,7 @@ yarn add babel-plugin-treasure -D
 }
 ```
 
-`options` 可以是一个数组.~ 它不支持在 babel@7+ 环境中设置
+`options` 可以是一个数组,但不支持在 babel@7+ 环境中设置
 
 ```javascript
 [
@@ -177,7 +182,7 @@ Note : 当设置 style 为 true 的时候加载 css 预编译文件(less/scss)�
 
 #### `{ libraryDirectory: true }`
 
-加载 css 译文件：
+加载 css 文件：
 
 #### `{ libraryDirectory: "css" }`
 
@@ -193,7 +198,6 @@ Note : 当设置 style 为 true 的时候加载 css 预编译文件(less/scss)�
 
 ```js
 import { ChromeDownload  } from 'dt-react-component'
-
       ↓ ↓ ↓ ↓ ↓ ↓
 ```
 
@@ -213,7 +217,7 @@ ChromeDownload → chromeDownload // 转换小驼峰
 ```
 
 ```js
-// camel2DashComponentName: "lower"
+// camel2DashComponentName: "upper"
 ChromeDownload → ChromeDownload // 转换大驼峰
 ```
 
@@ -225,6 +229,7 @@ ChromeDownload → ChromeDownload // 转换大驼峰
 import { ChromeDownload } from 'dt-react-component'
 
       ↓ ↓ ↓ ↓ ↓ ↓
+
 ChromeDownload → chrome_download
 ```
 
@@ -322,7 +327,9 @@ module.exports = function customName(name) {
 
 ```js
 import { ChromeDownload } from 'dt-react-component'
+
 ↓ ↓ ↓ ↓ ↓ ↓
+
 import 'dt-react-component/lib/chrome-download/exmaple'
 ```
 
