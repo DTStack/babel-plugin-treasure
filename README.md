@@ -14,6 +14,31 @@ npm i babel-plugin-treasure --save-dev
 yarn add babel-plugin-treasure -D
 ```
 
+## 使用前需要注意点
+
+==**删除应用入口处的 antd 或者 dt-react-component 的样式引入**==，因为插件会帮你自动做。
+
+```javascrit
+// 不需要添加这些样式！
+// import 'antd/dist/antd.css';
+// import 'antd/dist/antd.less'
+```
+
+## 如何使用 babel-plugin-treasure
+
+可通过以下两种途径进行使用
+
+- [babelrc](https://babeljs.io/docs/usage/babelrc/)
+- [babel-loader](https://github.com/babel/babel-loader)
+
+添加到 `.babelrc` 或 babel-loader.
+
+```js
+{
+  "plugins": [["treasure", options]]
+}
+```
+
 ### 属性
 
 `options` 可以是一个对象.
@@ -46,31 +71,6 @@ yarn add babel-plugin-treasure -D
   ["import", { "libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
   ["import", { "libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
 ]
-```
-
-## 使用前需要注意点
-
-==**删除应用入口处的 antd 或者 dt-react-component 的样式引入**==，因为插件会帮你自动做。
-
-```javascrit
-// 不需要添加这些样式！
-// import 'antd/dist/antd.css';
-// import 'antd/dist/antd.less'
-```
-
-## 如何使用 babel-plugin-treasure
-
-可通过以下两种途径进行使用
-
-- [babelrc](https://babeljs.io/docs/usage/babelrc/)
-- [babel-loader](https://github.com/babel/babel-loader)
-
-添加到 `.babelrc` 或 babel-loader.
-
-```js
-{
-  "plugins": [["treasure", options]]
-}
 ```
 
 ### 按需加载 dt-react-component
@@ -148,6 +148,7 @@ yarn add babel-plugin-treasure -D
 - 无破坏性改动，兼容原本 babel-plugin-import 的所有 API
 - 支持组件名或者方法名大小驼峰名称转换
 - 支持以对象的形式输入自定义路径节点，API：customName: { 别名/组件名: 路径 }，如果没有取别名以组件名命名即可
+- 支持导入没有 default 入口的组件
 
 ### 修复点
 
