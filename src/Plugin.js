@@ -122,10 +122,10 @@ export default class Plugin {
     const { types } = this;
     const pluginState = this.getPluginState(state);
     if (types.isIdentifier(node.callee)) {
-      // 这里对应场景不明
-      // if (pluginState.specified[name]) {
-      //   node.callee = this.importMethod(pluginState.specified[name], file, pluginState);
-      // }
+      // 对应一般的调用表达式
+      if (pluginState.specified[name]) {
+        node.callee = this.importMethod(pluginState.specified[name], file, pluginState);
+      }
     }
     node.arguments = node.arguments.map(arg => {
       const { name: argName } = arg;
@@ -202,6 +202,12 @@ export default class Plugin {
     }
     return { ...pluginState.selectedMethods[methodName] };
   }
+
+  Property(path, state) {
+    const { node } = path;
+    this.buildDeclaratorHandler(node, 'value', path, state);
+  }
+
   /**
    * 区块分界线
    **/
@@ -212,7 +218,7 @@ export default class Plugin {
     if (!node?.object?.name) return;
 
     if (pluginState.libraryObjs[node.object.name]) {
-      path.replceWith(this.importMethod(node.property.name, file, pluginState));
+      path.replaceWith(this.importMethod(node.property.name, file, pluginState));
     } else if (pluginState.specified[node.object.name] && path.scope.hasBinding(node.object.name)) {
       const { scope } = path.scope.getBinding(node.object.name);
 
