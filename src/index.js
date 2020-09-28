@@ -7,6 +7,7 @@ export default function({ types }) {
   /**
    * 用于单测初始化插件
    */
+  // eslint-disable-next-line no-underscore-dangle
   global.__clearBabelTreasurePlugin = () => {
     plugins = null;
   };
@@ -73,7 +74,7 @@ export default function({ types }) {
   ];
 
   const ret = {
-    visitor: { Program }, //对整棵AST树的入口进行初始化操作
+    visitor: { Program }, // 对整棵AST树的入口进行初始化操作
   };
   // eslint-disable-next-line no-restricted-syntax
   for (const method of methods) {

@@ -3,7 +3,6 @@ import { addNamed, addDefault, addSideEffect } from '@babel/helper-module-import
 
 function normalizeCustomName(originCustomName) {
   if (typeof originCustomName === 'string') {
-    // eslint-disable-next-line import/no-dynamic-require
     const customeNameExports = require(originCustomName);
     return typeof customeNameExports === 'function'
       ? customeNameExports
