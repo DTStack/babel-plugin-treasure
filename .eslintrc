@@ -1,5 +1,14 @@
 {
-  "extends": ["airbnb/base", "plugin:prettier/recommended"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "rules": {
     "no-console": [0],
     "prettier/prettier": 2,
