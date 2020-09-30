@@ -1,2 +1,5 @@
-import { Modal } from 'antd';
-const _Modal = bind({})(Modal);
+"use strict";
+
+var _antd = require("antd");
+
+var _Modal = bind({})(_antd.Modal);

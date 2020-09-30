@@ -108,7 +108,7 @@ describe('index', () => {
       const actual = (function() {
         if (caseName === 'modules-false') {
           return transform(readFileSync(actualFile), {
-            presets: ['umi'],
+            presets: ['@babel/preset-env', '@babel/preset-react'],
             plugins: [[plugin, { libraryName: 'antd', style: true }]],
           }).code;
         } else if (caseName === 'multiple-libraries') {
@@ -162,14 +162,5 @@ describe('index', () => {
       const expected = readFileSync(expectedFile, 'utf-8');
       expect(actual.trim()).toEqual(expected.trim());
     });
-  });
-
-  it(`tmp`, () => {
-    const actualFile = join(fixturesDir, `variable-declaration/actual.js`);
-    const actual = transformFileSync(actualFile, {
-      presets: ['@babel/preset-react'],
-      plugins: [plugin],
-    }).code;
-    console.log(actual);
   });
 });
