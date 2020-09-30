@@ -141,6 +141,20 @@ describe('index', () => {
               ],
             ],
           }).code;
+        } else if (caseName === 'camel2-dash-component-name-array') {
+          return transformFileSync(actualFile, {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: [
+              [
+                plugin,
+                {
+                  libraryName: 'dt-react-component',
+                  transformToDefaultImport: ['Circle'],
+                  style: true,
+                },
+              ],
+            ],
+          }).code;
         } else if (caseName === 'super-class') {
           return transformFileSync(actualFile, {
             plugins: [[plugin, { libraryName: 'antd' }]],

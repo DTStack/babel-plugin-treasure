@@ -9,7 +9,7 @@ function outputExpectedTask() {
   return src('test/fixtures/**/*/actual.js')
     .pipe(
       through.obj(function(file, _, callback) {
-        const pathName = file.relative.match(/[A-Za-z-]+(?=\/)/)[0];
+        const pathName = file.relative.match(/[A-Za-z-1-9]+(?=\/)/)[0];
         this.push(pathName);
         callback();
       }),
@@ -148,6 +148,20 @@ function getConfig(caseName) {
     return {
       presets: ['@babel/preset-react'],
       plugins: [plugin],
+    };
+  } else if (caseName === 'camel2-dash-component-name-array') {
+    return {
+      presets: ['@babel/preset-env', '@babel/preset-react'],
+      plugins: [
+        [
+          plugin,
+          {
+            libraryName: 'dt-react-component',
+            transformToDefaultImport: ['Circle'],
+            style: true,
+          },
+        ],
+      ],
     };
   } else {
     return {
