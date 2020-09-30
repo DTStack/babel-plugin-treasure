@@ -44,10 +44,10 @@ export default class Plugin {
     this.libraryDirectory = typeof libraryDirectory === 'undefined' ? 'lib' : libraryDirectory; // 包路径
     this.style = style || false; // 是否加载style
     this.styleLibraryDirectory = styleLibraryDirectory; // style包路径
-    this.camel2DashComponentName = camel2DashComponentName || true; // 组件名转换为大 /小驼峰【upper/lower】
-    this.transformToDefaultImport = Array.isArray(transformToDefaultImport)
-      ? transformToDefaultImport
-      : true; // 处理默认导入，暂不知为何默认为true
+    this.camel2DashComponentName =
+      typeof camel2DashComponentName === 'undefined' ? true : camel2DashComponentName; // 组件名转换为大 /小驼峰【upper/lower】
+    this.transformToDefaultImport =
+      typeof transformToDefaultImport === undefined ? true : transformToDefaultImport; // 处理默认导入，暂不知为何默认为true
     this.customName = normalizeCustomName(customName); // 处理转换结果的函数或路径
     this.customStyleName = normalizeCustomName(customStyleName); // 处理转换结果的函数或路径
     this.camel2UnderlineComponentName = camel2UnderlineComponentName; // 处理成类似time_picker的形式
@@ -166,20 +166,26 @@ export default class Plugin {
       const path = winPath(
         customName
           ? typeof customName === 'object'
-            ? customName[transformedMethodName] ||
+            ? customName[methodName] ||
               join(libraryName, libraryDirectory, transformedMethodName, fileName)
             : customName(transformedMethodName, file)
           : join(libraryName, libraryDirectory, transformedMethodName, fileName),
       );
+      !customName
+        ? join(libraryName, libraryDirectory, transformedMethodName, fileName)
+        : typeof customName === 'object' && customName[methodName]
+        ? customName[methodName]
+        : customName(transformedMethodName, file);
       /**
        * 根据是否是默认引入对最终路径做处理,并没有对namespace做处理
        */
       pluginState.selectedMethods[methodName] =
-        Array.isArray(transformToDefaultImport) &&
-        transformToDefaultImport.indexOf(methodName) !== -1
+        transformToDefaultImport === false ||
+        (Array.isArray(transformToDefaultImport) &&
+          transformToDefaultImport.indexOf(methodName) !== -1)
           ? addNamed(file.path, methodName, path)
           : addDefault(file.path, path, { nameHint: methodName });
-
+      // console.log(methodName);
       if (this.customStyleName) {
         const stylePath = winPath(this.customStyleName(transformedMethodName));
         addSideEffect(file.path, `${stylePath}`);
@@ -204,7 +210,7 @@ export default class Plugin {
 
   Property(path, state) {
     const { node } = path;
-    this.buildDeclaratorHandler(node, 'value', path, state);
+    this.buildExpressionHandler(node, ['value'], path, state); // 可以测什么实例经过它
   }
 
   /**
@@ -315,6 +321,7 @@ export default class Plugin {
     const file = path?.hub?.file || state?.file; // 具体原因待补充，和help/import有关
     const { types } = this;
     const pluginState = this.getPluginState(state);
+    // console.log('都是啥！', props);
     props.forEach(prop => {
       if (!types.isIdentifier(node[prop])) return; // 不是Identifier就结束
       if (
