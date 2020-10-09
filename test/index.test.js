@@ -141,7 +141,7 @@ describe('index', () => {
               ],
             ],
           }).code;
-        } else if (caseName === 'camel2-dash-component-name-array') {
+        } else if (caseName === 'transform-to-default-import-array') {
           return transformFileSync(actualFile, {
             presets: ['@babel/preset-env', '@babel/preset-react'],
             plugins: [
@@ -150,7 +150,26 @@ describe('index', () => {
                 {
                   libraryName: 'dt-react-component',
                   transformToDefaultImport: ['Circle'],
+                  camel2DashComponentName: 'upper',
+
                   style: true,
+                },
+              ],
+            ],
+          }).code;
+        } else if (caseName === 'camel2-dash-name-lower') {
+          return transformFileSync(actualFile, {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: [
+              [
+                plugin,
+                {
+                  libraryName: 'dt-react-component',
+                  style: 'css',
+                  camel2DashComponentName: 'lower',
+                  customName: {
+                    GoBack: 'dt-react-component/lib/go-back',
+                  },
                 },
               ],
             ],
