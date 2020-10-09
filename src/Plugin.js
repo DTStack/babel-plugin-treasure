@@ -45,7 +45,7 @@ export default class Plugin {
     this.style = style || false; // 是否加载style
     this.styleLibraryDirectory = styleLibraryDirectory; // style包路径
     this.camel2DashComponentName =
-      typeof camel2DashComponentName === 'undefined' ? true : camel2DashComponentName; // 组件名转换为大 /小驼峰【upper/lower】
+      typeof camel2DashComponentName === undefined ? true : camel2DashComponentName; // 组件名转换为大 /小驼峰【upper/lower】
     this.transformToDefaultImport =
       typeof transformToDefaultImport === undefined ? true : transformToDefaultImport; // 处理默认导入，暂不知为何默认为true
     this.customName = normalizeCustomName(customName); // 处理转换结果的函数或路径
@@ -171,11 +171,6 @@ export default class Plugin {
             : customName(transformedMethodName, file)
           : join(libraryName, libraryDirectory, transformedMethodName, fileName),
       );
-      !customName
-        ? join(libraryName, libraryDirectory, transformedMethodName, fileName)
-        : typeof customName === 'object' && customName[methodName]
-        ? customName[methodName]
-        : customName(transformedMethodName, file);
       /**
        * 根据是否是默认引入对最终路径做处理,并没有对namespace做处理
        */
