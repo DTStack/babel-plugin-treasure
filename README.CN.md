@@ -1,7 +1,5 @@
 # babel-plugin-treasure
 
-## 什么是 babel-plugin-treasure
-
 基于 babel-plugin-import 致力于实现统一库的 AST 优化要求，应对各种 AST 节点修改操作的诉求。目前用于统一式便捷解决任何组件库的按需加载需求
 
 ## 与 babel-plugin-import 的区别
@@ -18,7 +16,7 @@
 
 - 修复 babel-plugin-import 未对 switch 相关 AST 树进行转换的错误
 
-## 安装 babel-plugin-treasure
+## 安装
 
 ```javascript
 // 使用 npm
@@ -43,7 +41,7 @@ yarn add babel-plugin-treasure -D
 }
 ```
 
-### 属性
+### 配置
 
 `options` 可以是一个对象.
 
@@ -303,7 +301,7 @@ import { ChromeDownload } from 'dt-react-component'
 import 'dt-react-component/lib/chrome-download/exmaple'
 ```
 
-## 未来
+## 路线图
 
 - 随着各类库的变革做出及时更新
 - 支持更多的 AST 类型操作

@@ -1,7 +1,5 @@
 # babel-plugin-treasure
 
-## What is babel-plugin-treasure
-
 Based on babel-plugin-import, we are committed to realizing the AST optimization requirements of the unified library and responding to the requirements of various AST node modification operations. Currently used in a unified and convenient way to solve the on-demand loading requirements of any component library
 
 ## Difference with babel-plugin-import
@@ -18,7 +16,7 @@ Based on babel-plugin-import, we are committed to realizing the AST optimization
 
 - Fixed the bug that babel-plugin-import did not convert the switch related AST tree
 
-## Install babel-plugin-treasure
+## Usage
 
 ```javascript
 // use npm
@@ -28,7 +26,7 @@ npm i babel-plugin-treasure --save-dev
 yarn add babel-plugin-treasure -D
 ```
 
-## Instructions for use
+## Instructions
 
 Can be used in the following two ways
 
@@ -43,7 +41,7 @@ Add to `.babelrc` or babel-loader.
 }
 ```
 
-### Attributes
+### Configuration
 
 ʻOptions` can be an object.
 
@@ -121,7 +119,7 @@ Note: When you have multiple libraries in your development project that need to 
   ]
 ```
 
-## Plugin API list
+## API
 
 ### libraryName
 
@@ -299,7 +297,7 @@ import {ChromeDownload} from'dt-react-component'
 import'dt-react-component/lib/chrome-download/exmaple'
 ```
 
-## Future
+## Roadmap
 
 - Make timely updates with changes in various libraries
 - Support more AST type operations
