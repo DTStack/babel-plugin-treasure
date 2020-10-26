@@ -210,12 +210,12 @@ Handle individual sequences with irregular rules, support function, object and p
 [
   'import',
   {
-    libraryName:'dt-react-component',
+    libraryName: 'dt-react-component',
     customName: (name: string) => {
-      if (name ==='go-back') {
-        return'antd/lib/go-back';
+      if (name === 'go-back') {
+        return 'antd/lib/go-back';
       }
-      return ʻantd/lib/${name}`;
+      return `antd/lib/${name}`;
     },
   },
 ];
