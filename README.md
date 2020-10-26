@@ -1,42 +1,41 @@
 # babel-plugin-treasure
 
-## 根源
+## What is babel-plugin-treasure
 
-为什么在有 tree-shaking 的现在我们还需要这个插件？  
-此插件的作用在于帮你对你所引用的库进行 tree-shaking，关于项目内部的 tree-shaking 奥秘以及更多的奥秘请看文[你的 tree-shaking 其实并没什么软用](https://note.youdao.com/)
+Based on babel-plugin-import, we are committed to realizing the AST optimization requirements of the unified library and responding to the requirements of various AST node modification operations. Currently used in a unified and convenient way to solve the on-demand loading requirements of any component library
 
-## 为什么取名 babel-plugin-treasure
+## Difference with babel-plugin-import
 
-致力于成为 babel-plugin 百宝箱，各种对 AST 节点修改操作的诉求，目前用于统一式便捷解决 dt-react-component 与 ant-design-dtinsight-theme 的按需加载需求
+### Optimization points
 
-## 安装 babel-plugin-treasure
+- No destructive changes, compatible with all APIs of the original babel-plugin-import
+- Support component name or method name size conversion
+- Support inputting custom path nodes in the form of objects
+- Support exporting components whose entry is part of the default attribute
+- Support react17+ jsx new conversion
+
+### Fix point
+
+- Fixed the bug that babel-plugin-import did not convert the switch related AST tree
+
+## Install babel-plugin-treasure
 
 ```javascript
-// 使用npm
+// use npm
 npm i babel-plugin-treasure --save-dev
 
-// 使用yarn
+// use yarn
 yarn add babel-plugin-treasure -D
 ```
 
-## 使用前注意事项
+## Instructions for use
 
-**删除应用入口处的 antd 或者 dt-react-component 的样式引入**，因为插件会帮你自动做。
-
-```javascrit
-// 不需要添加这些样式！
-// import 'antd/dist/antd.css';
-// import 'antd/dist/antd.less'
-```
-
-## 如何使用 babel-plugin-treasure
-
-可通过以下两种途径进行使用
+Can be used in the following two ways
 
 - [babelrc](https://babeljs.io/docs/usage/babelrc/)
 - [babel-loader](https://github.com/babel/babel-loader)
 
-添加到 `.babelrc` 或 babel-loader.
+Add to `.babelrc` or babel-loader.
 
 ```js
 {
@@ -44,43 +43,43 @@ yarn add babel-plugin-treasure -D
 }
 ```
 
-### 属性
+### Attributes
 
-`options` 可以是一个对象.
+ʻOptions` can be an object.
 
 ```javascript
 {
   "libraryName": "dt-react-component",
-  "style": true,   // or 'css'
+  "style": true, // or'css'
 }
 ```
 
-`options` 可以是一个数组,但不支持在 babel@7+ 环境中设置
+ʻOptions` can be an array, but it does not support setting in the babel@7+ environment
 
 ```javascript
 [
   {
     libraryName: 'dt-react-component',
-    style: true, // or 'css'
+    style: true, // or'css'
   },
 ];
 ```
 
-`options` 在 babel@7+环境中不能是数组,但是你可以给插件添加一个名字来支持复用.
+ʻOptions` cannot be an array in the babel@7+ environment, but you can add a name to the plugin to support reuse.
 
-比如:
+such as:
 
 ```javascrit
 // .babelrc
 "plugins": [
-  ["import", { "libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
-  ["import", { "libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
+  ["import", {"libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
+  ["import", {"libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
 ]
 ```
 
-### 按需加载 dt-react-component
+### Load libraries on demand
 
-当你在项目中单纯引入 dt-react-component 的时候，您只需如下配置:
+When you simply import the library in the project, you only need to add the following configuration. For example, configure dt-react-component:
 
 ```javascript
   "plugins": [
@@ -89,33 +88,14 @@ yarn add babel-plugin-treasure -D
       {
         "libraryName": "dt-react-component",
         "libraryDirectory": "lib",
-        "style": "css",
-        "transformToDefaultImport"": [
-          "ContextMenu",
-          "BreadcrumbRender",
-          "Circle",
-          "RenderFormItem",
-          "FullScreenButton"
-        ],
         "camel2DashComponentName": "lower",
-        "customName": {
-          "goBack": "dt-react-component/lib/go-back",
-          "contextMenu": "dt-react-component/lib/context-menu",
-          "easySelect": "dt-react-component/lib/easy-select",
-          "spreadSheet": "dt-react-component/lib/spreadsheet",
-          "markdownRender": "dt-react-component/lib/markdown-render",
-          "breadcrumbRender": "dt-react-component/lib/breadcrumb",
-          "keyEventListener": "dt-react-component/lib/keyCombiner/listener",
-          "fullScreenButton": "dt-react-component/lib/fullscreen",
-          "switchWindow": "dt-react-component/lib/window",
-          "renderFormItem": "dt-react-component/lib/formComponent"
-        }
+        "style": "css"
       }
     ]
   ]
 ```
 
-注意：当你开发的项目中有使用 antd 的时候，请注意由于 dt-react-component 依赖于 antd，所以需要两者都进行配置，实现协同按需加载
+Note: When you have multiple libraries in your development project that need to be loaded on demand, you can add an alias to distinguish it, for example, dt-react-component is used with antd:
 
 ```javascript
   "plugins": [
@@ -129,118 +109,78 @@ yarn add babel-plugin-treasure -D
       "antd"
     ],
     [
-       "treasure",
+      "treasure",
       {
         "libraryName": "dt-react-component",
         "libraryDirectory": "lib",
-        "style": "css",
-        "transformToDefaultImport"": [
-          "ContextMenu",
-          "BreadcrumbRender",
-          "Circle",
-          "RenderFormItem",
-          "FullScreenButton"
-        ],
         "camel2DashComponentName": "lower",
-        "customName": {
-          "goBack": "dt-react-component/lib/go-back",
-          "contextMenu": "dt-react-component/lib/context-menu",
-          "easySelect": "dt-react-component/lib/easy-select",
-          "spreadSheet": "dt-react-component/lib/spreadsheet",
-          "markdownRender": "dt-react-component/lib/markdown-render",
-          "breadcrumbRender": "dt-react-component/lib/breadcrumb",
-          "keyEventListener": "dt-react-component/lib/keyCombiner/listener",
-          "fullScreenButton": "dt-react-component/lib/fullscreen",
-          "switchWindow": "dt-react-component/lib/window",
-          "renderFormItem": "dt-react-component/lib/formComponent"
-        }
+        "style": "css"
       },
       "dt-react-component"
     ]
   ]
 ```
 
-## 与 babel-plugin-import 的区别
-
-### 优化点
-
-- 无破坏性改动，兼容原本 babel-plugin-import 的所有 API
-- 支持组件名或者方法名大小驼峰名称转换
-- 支持以对象的形式输入自定义路径节点，API：customName: { 别名/组件名: 路径 }，如果没有取别名以组件名命名即可
-- 支持导入没有 default 入口的组件
-
-### 修复点
-
-- 修复 babel-plugin-import 没有对 switch 节点进行转换的 Bug
-
-## 插件 API 列表
+## Plugin API list
 
 ### libraryName
 
-需要按需引入 library 的名称，必填。
+The name of the library needs to be imported as required, which is required.
 
 #### `{ "libraryName": "dt-react-component" }`
 
 ### libraryDirectory
 
-制定 library 的包格式目录，一般有 lib, es, esm, umd 等，由包开发者制定。此选项默认值为 lib
+Formulate the package format directory of the library, generally lib, es, esm, umd, etc., which are determined by the package developer. The default value of this option is lib
 
 #### `{ libraryDirectory: "lib" }`
 
 ### style
 
-是否需要按需加载 css 文件，默认不开启  
-Note : 当设置 style 为 true 的时候加载 css 预编译文件(less/scss)，设置为 css 时加载 css 文件.
+Do you need to load css files on demand, not enabled by default Note: Load the css precompiled file (less/scss) when the style is set to true, and load the css file when it is set to css.
 
-加载 css 预编译文件：
+Load the css precompiled file:
 
 #### `{ libraryDirectory: true }`
 
-加载 css 文件：
+Load the css file:
 
 #### `{ libraryDirectory: "css" }`
 
 ### styleLibraryDirectory
 
-制定 css 文件的 library 的包，一般不需要写
+The library package for making css files, generally does not need to be written
 
 #### `{ styleLibraryDirectory: "lib" }`
 
 ### camel2DashComponentName
 
-制定组件名的转换，参数有四种，默认为 true。转换规则如下所示：
+There are four parameters for the conversion of the component name, and the default is true. The conversion rules are as follows:
 
 ```js
-import { ChromeDownload  } from 'dt-react-component'
+import {ChromeDownload} from'dt-react-component'
+
       ↓ ↓ ↓ ↓ ↓ ↓
-```
 
-```js
-// camel2DashComponentName: true
+// When camel2DashComponentName: true
 ChromeDownload → chrome-download
-```
 
-```js
-// camel2DashComponentName: false
-ChromeDownload → ChromeDownload // 不做改动
-```
+// When camel2DashComponentName: false
+ChromeDownload → ChromeDownload // No changes
 
-```js
-// camel2DashComponentName: "lower"
-ChromeDownload → chromeDownload // 转换小驼峰
-```
+// When camel2DashComponentName: "lower"
+ChromeDownload → chromeDownload // convert lower camel
 
-```js
-// camel2DashComponentName: "upper"
-ChromeDownload → ChromeDownload // 转换大驼峰
+// When camel2DashComponentName: "upper"
+ChromeDownload → ChromeDownload // convert upper camel
 ```
 
 ### camel2UnderlineComponentName
 
-处理多词构成的组件以\_进行单词分割
+Handle multi-word components with \_ for word segmentation
 
 ```js
-import { ChromeDownload } from 'dt-react-component'
+import { ChromeDownload } from'dt-react-component'
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -249,38 +189,50 @@ ChromeDownload → chrome_download
 
 ### transformToDefaultImport
 
-处理默认导入，你可以给予一个数组，在数组中的组件，最后不会以默认形式进行导出。默认为 true， 如果你的组件完全没有默认导入，请把选项设置为 false
+Process the attributes of the default import library, the default is true. You can give an array, and the components in the array will not be exported in the default form. If your library is not imported by default at all, please set the option to false For example:
+
+```js
+// Set transformToDefaultImport: [ChromeDownload]
+import { ChromeDownload, Circle } from'dt-react-component'
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import _Circle from "dt-react-component/lib/circle";
+import { ChromeDownload as _ChromeDownload } from "dt-react-component/lib/chromeDownload";
+```
 
 ### customName
 
-处理个别不统一规则的序列，支持函数，对象与路径导入
+Handle individual sequences with irregular rules, support function, object and path import
 
 ```js
-// 函数形式
+// Function form
 [
   'import',
   {
-    libraryName: 'dt-react-component',
+    libraryName:'dt-react-component',
     customName: (name: string) => {
-      if (name === 'GoBack') {
-        return 'antd/lib/go-back';
+      if (name ==='go-back') {
+        return'antd/lib/go-back';
       }
-      return `antd/lib/${name}`;
+      return ʻantd/lib/${name}`;
     },
   },
 ];
 ```
 
-通过处理后，会变成这样
+After processing, it will become like this
 
 ```js
-import { GoBack } from "antd"
+import {GoBack} from "antd"
+
 ↓ ↓ ↓ ↓ ↓ ↓
-var _button = require('dt-react-component/lib/go-back');
+
+var _button = require('antd/lib/go-back');
 ```
 
 ```js
-// 对象形式
+// Object form
 [
   'import',
   {
@@ -292,10 +244,10 @@ var _button = require('dt-react-component/lib/go-back');
 ];
 ```
 
-最后你可以选择引用一个路径：
+Note: When you use a function, the function parameter is the name converted by styleLibraryDirectory or camel2DashComponentName. When you use an object as a parameter, the key of the object will not undergo a special conversion. The same is true for customStyleName. In addition, you can also choose the reference path:
 
 ```js
-// 引用路径
+// reference path
 [
   'import',
   {
@@ -307,7 +259,7 @@ var _button = require('dt-react-component/lib/go-back');
 ];
 ```
 
-`customName.js`是这样的：
+`customName.js` is similar:
 
 ```js
 module.exports = function customName(name) {
@@ -317,73 +269,42 @@ module.exports = function customName(name) {
 
 #### customStyleName
 
-与 customName 同理，只是用于处理 style 文件路径
+Same as customName, but used to process the style file path
 
 #### fileName
 
-处理链接到具体的文件，例如：
+Process links to specific files, such as:
 
 ```js
-// 对象形式
+// Object form
 [
-  "import",
-    {
-      "libraryName": "dt-react-component",
-      "fileName": "example"
-      "customName": {
-         "GoBack": "dt-react-component/lib/go-back",
-      }
-    }
+   "import",
+     {
+       "libraryName": "dt-react-component",
+       "fileName": "example"
+       "customName": {
+          "GoBack": "dt-react-component/lib/go-back",
+       }
+     }
 ]
 ```
 
-转换后结果如下：
+The result after conversion is as follows:
 
 ```js
-import { ChromeDownload } from 'dt-react-component'
+import {ChromeDownload} from'dt-react-component'
 
 ↓ ↓ ↓ ↓ ↓ ↓
 
-import 'dt-react-component/lib/chrome-download/exmaple'
+import'dt-react-component/lib/chrome-download/exmaple'
 ```
 
-## 关于优化点的说明
+## Future
 
-### customName
+- Make timely updates with changes in various libraries
+- Support more AST type operations
+- Dynamic configuration of AST operation function type according to treasure IDE
 
-虽然 customName 支持了以对象作为参数，但是相比函数作为参数有一个很明显的不足之处：当函数作为 customName 的 value 时，插件会返回组件当前的名称，你将在插件返回的组件名称的基础上进行修改，而对象的形式**你必须预测到组件被插件修改后的名称**，并给予转换后的路径。  
-举个例子：如果你设置了"camel2DashComponentName": "lower"。并且在代码中导入了
+## License
 
-```js
-import { ChromeDownload } from 'dt-react-component';
-```
-
-```js
-// bad, useless
-[
-    "treasure",
-    {
-        ...,
-        "customName": {
-            "ChromeDownload":"dt-react-component/lib/chrome-download"
-        }
-    }
-]
-
-```
-
-```js
-// good
-// 由于你设置了lower，所以必须手动将key变成小驼峰的形式:chromeDownload
-[
-    "treasure",
-    {
-        ...,
-        "customName": {
-            "chromeDownload":"dt-react-component/lib/chrome-download"
-        }
-    }
-]
-```
-
-其他支持以对象作为参数的属性同理。
+MIT
