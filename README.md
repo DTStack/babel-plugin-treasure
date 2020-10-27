@@ -16,7 +16,7 @@ Based on babel-plugin-import, we are committed to realizing the AST optimization
 
 - Fixed the bug that babel-plugin-import did not convert the switch related AST tree
 
-## Usage
+## Install
 
 ```javascript
 // use npm
@@ -26,7 +26,7 @@ npm i babel-plugin-treasure --save-dev
 yarn add babel-plugin-treasure -D
 ```
 
-## Instructions
+## Usage
 
 Can be used in the following two ways
 
