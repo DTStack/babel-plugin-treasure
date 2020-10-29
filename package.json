@@ -8,8 +8,7 @@
     "build": "father build --cjs",
     "dev": "father doc dev",
     "lint": "eslint --ext .js src",
-    "test": "father test --coverage",
-    "test:coverage": "father test --coverage"
+    "test": "father test --coverage"
   },
   "keywords": [
     "babel",
