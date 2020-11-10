@@ -13,11 +13,12 @@
   },
   "keywords": [
     "babel",
+    "babel-plugin",
     "dtstack"
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "lint-staged": "lint-staged"
     }
   },
   "lint-staged": {
