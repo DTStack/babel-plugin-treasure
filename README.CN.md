@@ -315,4 +315,4 @@ import 'dt-react-component/lib/chrome-download/exmaple'
 
 ## 执照
 
-MIT
+[MIT](./LICENSE)
