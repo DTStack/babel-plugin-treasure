@@ -1,6 +1,12 @@
 # babel-plugin-treasure
 
+![NPM version](https://img.shields.io/badge/npm-v0.9.0-blue) ![Build Status](https://img.shields.io/badge/build-passing-orange) ![Coverage Status](https://img.shields.io/badge/coverage-97%25-brightgreen) ![License Status](https://img.shields.io/badge/license-MIT-lightgrey)  
 Based on babel-plugin-import, we are committed to realizing the AST optimization requirements of the unified library and responding to the requirements of various AST node modification operations. Currently used in a unified and convenient way to solve the on-demand loading requirements of any component library
+
+---
+
+- [English Instruction](./README.md)
+- [中文说明](./README.CN.md)
 
 ## Difference with babel-plugin-import
 
@@ -305,4 +311,4 @@ import'dt-react-component/lib/chrome-download/exmaple'
 
 ## License
 
-MIT
+[MIT](./LICENSE)
