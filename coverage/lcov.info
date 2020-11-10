@@ -1,5 +1,5 @@
 TN:
-SF:/Users/libowen/Desktop/Code/gitlab.prod.dtstack.cn/dt-insight-front/infrastructure/babel-plugin-treasure/src/Plugin.js
+SF:/Users/libowen/Desktop/Code/github.com/DTStack/babel-plugin-treasure/src/Plugin.js
 FN:4,normalizeCustomName
 FN:14,winPath
 FN:18,transCamel
@@ -296,7 +296,7 @@ BRF:99
 BRH:93
 end_of_record
 TN:
-SF:/Users/libowen/Desktop/Code/gitlab.prod.dtstack.cn/dt-insight-front/infrastructure/babel-plugin-treasure/src/index.js
+SF:/Users/libowen/Desktop/Code/github.com/DTStack/babel-plugin-treasure/src/index.js
 FN:4,(anonymous_0)
 FN:11,(anonymous_1)
 FN:18,applyInstance
