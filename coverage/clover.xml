@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1602214706980" clover="3.2.0">
-  <project timestamp="1602214706980" name="All files">
+<coverage generated="1605000398056" clover="3.2.0">
+  <project timestamp="1605000398057" name="All files">
     <metrics statements="147" coveredstatements="144" conditionals="106" coveredconditionals="96" methods="39" coveredmethods="38" elements="292" coveredelements="278" complexity="0" loc="147" ncloc="147" packages="1" files="2" classes="2"/>
     <file name="Plugin.js" path="/Users/libowen/Desktop/Code/gitlab.prod.dtstack.cn/dt-insight-front/infrastructure/babel-plugin-treasure/src/Plugin.js">
       <metrics statements="125" coveredstatements="125" conditionals="99" coveredconditionals="93" methods="32" coveredmethods="32"/>

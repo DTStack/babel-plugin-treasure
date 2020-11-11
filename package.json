@@ -1,6 +1,7 @@
 {
   "name": "babel-plugin-treasure",
   "version": "0.9.0",
+  "repository": "https://github.com/DTStack/babel-plugin-treasure",
   "description": "a babel plugin for the special demand",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -12,11 +13,12 @@
   },
   "keywords": [
     "babel",
+    "babel-plugin",
     "dtstack"
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "lint-staged": "lint-staged"
     }
   },
   "lint-staged": {
@@ -26,7 +28,7 @@
     ]
   },
   "author": "chenfeng",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
