@@ -1,14 +1,14 @@
 # babel-plugin-treasure
 
 ![NPM version](https://img.shields.io/badge/npm-v0.9.0-blue) ![Build Status](https://img.shields.io/badge/build-passing-orange) ![Coverage Status](https://img.shields.io/badge/coverage-97%25-brightgreen) ![License Status](https://img.shields.io/badge/license-MIT-lightgrey)  
-基于 babel-plugin-import 致力于实现统一库的 AST 优化要求，应对各种 AST 节点修改操作的诉求。目前用于统一式便捷解决任何组件库的按需加载需求
+基于 babel-plugin-treasure 致力于实现统一库的 AST 优化要求，应对各种 AST 节点修改操作的诉求。目前用于统一式便捷解决任何组件库的按需加载需求
 
 ---
 
 - [English Instruction](./README.md)
 - [中文说明](./README.CN.md)
 
-## 与 babel-plugin-import 的区别
+## 与 babel-plugin-treasure 的区别
 
 ### 优化点
 
@@ -20,7 +20,7 @@
 
 ### 修复点
 
-- 修复 babel-plugin-import 未对 switch 相关 AST 树进行转换的错误
+- 修复 babel-plugin-treasure 未对 switch 相关 AST 树进行转换的错误
 
 ## 安装
 
@@ -76,8 +76,8 @@ yarn add babel-plugin-treasure -D
 ```javascrit
 // .babelrc
 "plugins": [
-  ["import", { "libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
-  ["import", { "libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
+  ["treasure", { "libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
+  ["treasure", { "libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
 ]
 ```
 
