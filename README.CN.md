@@ -215,7 +215,7 @@ import { ChromeDownload as _ChromeDownload } from "dt-react-component/lib/chrome
 ```js
 // 函数形式
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: (name: string) => {
@@ -241,7 +241,7 @@ var _button = require('antd/lib/go-back');
 ```js
 // 对象形式
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: {
@@ -257,7 +257,7 @@ var _button = require('antd/lib/go-back');
 ```js
 // 引用路径
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: {
@@ -286,7 +286,7 @@ module.exports = function customName(name) {
 ```js
 // 对象形式
 [
-  "import",
+  "treasure",
     {
       "libraryName": "dt-react-component",
       "fileName": "example"
