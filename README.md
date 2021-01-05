@@ -76,8 +76,8 @@ such as:
 ```javascrit
 // .babelrc
 "plugins": [
-  ["import", {"libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
-  ["import", {"libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
+  ["treasure", {"libraryName": "dt-react-component", "libraryDirectory": "lib"}, "dtcomponent"],
+  ["treasure", {"libraryName": "lodash", "libraryDirectory": "lib"}, "lodash"]
 ]
 ```
 
@@ -212,7 +212,7 @@ Handle individual sequences with irregular rules, support function, object and p
 ```js
 // Function form
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: (name: string) => {
@@ -238,7 +238,7 @@ var _button = require('antd/lib/go-back');
 ```js
 // Object form
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: {
@@ -253,7 +253,7 @@ Note: When you use a function, the function parameter is the name converted by s
 ```js
 // reference path
 [
-  'import',
+  'treasure',
   {
     libraryName: 'dt-react-component',
     customName: {
@@ -282,7 +282,7 @@ Process links to specific files, such as:
 ```js
 // Object form
 [
-   "import",
+   "treasure",
      {
        "libraryName": "dt-react-component",
        "fileName": "example"
