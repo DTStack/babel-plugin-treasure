@@ -8,7 +8,7 @@
 - [English Instruction](./README.md)
 - [中文说明](./README.CN.md)
 
-## 与 babel-plugin-treasure 的区别
+## 与 babel-plugin-import 的区别
 
 ### 优化点
 
@@ -20,7 +20,7 @@
 
 ### 修复点
 
-- 修复 babel-plugin-treasure 未对 switch 相关 AST 树进行转换的错误
+- 修复 babel-plugin-import 未对 switch 相关 AST 树进行转换的错误
 
 ## 安装
 
