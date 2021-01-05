@@ -1,7 +1,7 @@
 # babel-plugin-treasure
 
 ![NPM version](https://img.shields.io/badge/npm-v0.9.0-blue) ![Build Status](https://img.shields.io/badge/build-passing-orange) ![Coverage Status](https://img.shields.io/badge/coverage-97%25-brightgreen) ![License Status](https://img.shields.io/badge/license-MIT-lightgrey)  
-基于 babel-plugin-treasure 致力于实现统一库的 AST 优化要求，应对各种 AST 节点修改操作的诉求。目前用于统一式便捷解决任何组件库的按需加载需求
+基于 babel-plugin-import 致力于实现统一库的 AST 优化要求，应对各种 AST 节点修改操作的诉求。目前用于统一式便捷解决任何组件库的按需加载需求
 
 ---
 
